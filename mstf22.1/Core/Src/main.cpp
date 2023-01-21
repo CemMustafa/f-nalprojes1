@@ -7,7 +7,12 @@
   * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
-
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -25,6 +30,19 @@
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"
 /* USER CODE END Includes */
 
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 CRC_HandleTypeDef hcrc;
@@ -40,7 +58,7 @@ void vprint(const char *fmt, va_list argp)
     char string[200];
     if(0 < vsprintf(string, fmt, argp)) // build string
     {
-        //HAL_UART_Transmit(&huf); // send message via UART
+        //HAL_UART_Transmit(&huart1, (uint8_t*)string, strlen(string), 0xffffff); // send message via UART
     	 CDC_Transmit_FS((uint8_t*)string, strlen(string));
     }
 }
@@ -67,7 +85,14 @@ static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_CRC_Init(void);
-/
+/* USER CODE BEGIN PFP */
+/* Private function prototypes -----------------------------------------------*/
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
 LIS3DSH_DataScaled myData;
 char A[50];
 int i=0;
@@ -186,10 +211,12 @@ int main(void)
 	  featuresarrayisready=false;
 
   }
-  /* USE
+  /* USER CODE END 3 */
 }
 
-/
+/**
+  * @brief System Clock Configuration
+  * @retval None
   */
 void SystemClock_Config(void)
 {
@@ -232,8 +259,19 @@ void SystemClock_Config(void)
   }
 }
 
+/**
+  * @brief CRC Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_CRC_Init(void)
 {
+
+  /* USER CODE BEGIN CRC_Init 0 */
+
+  /* USER CODE END CRC_Init 0 */
+
+  /* USER CODE BEGIN CRC_Init 1 */
 
   /* USER CODE END CRC_Init 1 */
   hcrc.Instance = CRC;
@@ -241,12 +279,27 @@ static void MX_CRC_Init(void)
   {
     Error_Handler();
   }
+  /* USER CODE BEGIN CRC_Init 2 */
 
+  /* USER CODE END CRC_Init 2 */
+
+}
+
+/**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
   */
 static void MX_SPI1_Init(void)
 {
 
+  /* USER CODE BEGIN SPI1_Init 0 */
 
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
   /* SPI1 parameter configuration*/
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
@@ -266,13 +319,26 @@ static void MX_SPI1_Init(void)
   }
   /* USER CODE BEGIN SPI1_Init 2 */
 
+  /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_TIM7_Init(void)
 {
 
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
 
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /*
+  /* USER CODE BEGIN TIM7_Init 1 */
+
   /* USER CODE END TIM7_Init 1 */
   htim7.Instance = TIM7;
   htim7.Init.Prescaler = 20000;
@@ -289,7 +355,16 @@ static void MX_TIM7_Init(void)
   {
     Error_Handler();
   }
-  /
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
   */
 static void MX_GPIO_Init(void)
 {
@@ -351,12 +426,59 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   	  if(HAL_GPIO_ReadPin( GPIOA,GPIO_PIN_0)){*/
   drdyFlag = 1;
 /*
-  if(!fe
+  if(!featuresarrayisready){
+  	myData = LIS3DSH_GetDataScaled();
+  	features[3*countt]=myData.x;
+  	features[3*countt+1]=myData.y;
+  	features[3*countt+2]=myData.z;
+	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+	countt++;
+	if(countt==EI_CLASSIFIER_RAW_SAMPLE_COUNT){
+  		countt=0;
   		featuresarrayisready=true;
   	}
 }*/
   	  /*}
-
+  	   *
+  	  else{
+  		  if(pressed==1){
+  		  i=0;
+  		  pressed=0;
+  		CDC_Transmit_FS("\n", strlen("\n"));
+  		  }
+  	  }
+  }*/
 
 }
+/* USER CODE END 4 */
 
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  while(1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+    ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */
